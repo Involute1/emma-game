@@ -1,4 +1,4 @@
-var CONFETTI_COLORS = ["#e63946", "#f4a261", "#2a9d8f", "#457b9d", "#f1faee"];
+var CONFETTI_COLORS = ["#e63946", "#f4a261", "#2a9d8f", "#457b9d", "#8a4fd9"];
 
 function createConfettiParticle(canvasWidth, rng) {
   return {
