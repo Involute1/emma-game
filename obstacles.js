@@ -19,6 +19,9 @@ function moveObstacles(obstacles, speed) {
       if (obstacle.color !== undefined) {
         moved.color = obstacle.color;
       }
+      if (obstacle.cleared !== undefined) {
+        moved.cleared = obstacle.cleared;
+      }
       return moved;
     })
     .filter(function (obstacle) {

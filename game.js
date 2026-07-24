@@ -44,7 +44,6 @@ function handleInput() {
   if (gameState.status === GAME_STATUS.PLAYING) {
     if (player.grounded) {
       player = startJump(player, JUMP_VELOCITY);
-      gameState = registerJump(gameState, TOTAL_JUMPS_TO_WIN);
       playJumpSound();
     }
   } else {
@@ -76,6 +75,7 @@ function update() {
     var height = OBSTACLE_MIN_HEIGHT + Math.random() * (OBSTACLE_MAX_HEIGHT - OBSTACLE_MIN_HEIGHT);
     var obstacle = createObstacle(canvasWidth, GROUND_LINE_Y, OBSTACLE_WIDTH, height);
     obstacle.color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+    obstacle.cleared = false;
     obstacles.push(obstacle);
     distanceSinceLastSpawn = 0;
     nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP, OBSTACLE_MAX_GAP);
@@ -83,7 +83,12 @@ function update() {
 
   var playerRect = { x: PLAYER_X, y: player.y, width: PLAYER_WIDTH, height: PLAYER_HEIGHT };
   for (var i = 0; i < obstacles.length; i++) {
-    if (isColliding(playerRect, obstacles[i])) {
+    var o = obstacles[i];
+    if (!o.cleared && o.x + o.width < PLAYER_X) {
+      o.cleared = true;
+      gameState = registerJump(gameState, TOTAL_JUMPS_TO_WIN);
+    }
+    if (isColliding(playerRect, o)) {
       gameState = registerCollision(gameState);
       break;
     }
@@ -122,7 +127,7 @@ function drawGameOverOverlay() {
   ctx.fillText("GAME OVER", canvasWidth / 2, CANVAS_HEIGHT / 2 - 10);
   ctx.font = "14px sans-serif";
   ctx.fillText(
-    "Jumps landed: " + gameState.jumpCount + " — press space or click to retry",
+    "Obstacles cleared: " + gameState.jumpCount + " — press space or click to retry",
     canvasWidth / 2,
     CANVAS_HEIGHT / 2 + 14
   );
@@ -168,7 +173,7 @@ function render() {
 
   ctx.fillStyle = "#333333";
   ctx.font = "14px sans-serif";
-  ctx.fillText("Jumps: " + gameState.jumpCount + " / " + TOTAL_JUMPS_TO_WIN, 10, 20);
+  ctx.fillText("Cleared: " + gameState.jumpCount + " / " + TOTAL_JUMPS_TO_WIN, 10, 20);
 
   if (gameState.status === GAME_STATUS.GAME_OVER) {
     drawGameOverOverlay();
