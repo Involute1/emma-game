@@ -19,6 +19,33 @@ var distanceSinceLastSpawn = 0;
 var nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP, OBSTACLE_MAX_GAP);
 var confetti = [];
 var gameState = createInitialGameState();
+var audioCtx = null;
+
+function playJumpSound() {
+  var AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) {
+    return;
+  }
+  if (!audioCtx) {
+    audioCtx = new AudioContextClass();
+  }
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
+
+  var now = audioCtx.currentTime;
+  var osc = audioCtx.createOscillator();
+  var gain = audioCtx.createGain();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(300, now);
+  osc.frequency.exponentialRampToValueAtTime(700, now + 0.08);
+  gain.gain.setValueAtTime(0.2, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start(now);
+  osc.stop(now + 0.15);
+}
 
 function resetGame() {
   player = { y: PLAYER_GROUND_Y, velocityY: 0, grounded: true };
@@ -34,6 +61,7 @@ function handleInput() {
     if (player.grounded) {
       player = startJump(player, JUMP_VELOCITY);
       gameState = registerJump(gameState, TOTAL_JUMPS_TO_WIN);
+      playJumpSound();
     }
   } else {
     resetGame();
