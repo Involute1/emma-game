@@ -52,3 +52,18 @@ html, body {
   color: #333333;
   margin: 0;
 }
+
+#birthday-link-button {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.6rem 1.6rem;
+  border-radius: 999px;
+  background: #2a9d8f;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+#birthday-link-button:hover {
+  background: #21776b;
+}

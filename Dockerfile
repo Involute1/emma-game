@@ -2,7 +2,7 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY constants.js physics.js collision.js gameState.js obstacles.js confetti.js game.js index.html style.css package.json ./
+COPY config.js constants.js physics.js collision.js gameState.js obstacles.js confetti.js game.js index.html style.css package.json ./
 COPY scripts ./scripts
 COPY sounds ./sounds
 
