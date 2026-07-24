@@ -5,7 +5,7 @@ WORKDIR /app
 COPY constants.js physics.js collision.js gameState.js obstacles.js confetti.js game.js index.html style.css package.json ./
 COPY scripts ./scripts
 
-ENV PORT=8080
-EXPOSE 8080
+ENV PORT=9080
+EXPOSE 9080
 
 CMD ["node", "scripts/serve.js"]
