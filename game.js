@@ -79,21 +79,21 @@ function drawPlayer() {
   var x = PLAYER_X;
   var y = player.y;
   ctx.fillStyle = "#333333";
-  ctx.fillRect(x + 4, y, 12, 12);
-  ctx.fillRect(x + 2, y + 12, 16, 16);
+  ctx.fillRect(x + 8, y, 24, 24);
+  ctx.fillRect(x + 4, y + 24, 32, 32);
 
   if (player.grounded) {
     var legFrame = Math.floor(frameCount / 10) % 2;
     if (legFrame === 0) {
-      ctx.fillRect(x + 2, y + 28, 6, 12);
-      ctx.fillRect(x + 12, y + 28, 6, 8);
+      ctx.fillRect(x + 4, y + 56, 12, 24);
+      ctx.fillRect(x + 24, y + 56, 12, 16);
     } else {
-      ctx.fillRect(x + 2, y + 28, 6, 8);
-      ctx.fillRect(x + 12, y + 28, 6, 12);
+      ctx.fillRect(x + 4, y + 56, 12, 16);
+      ctx.fillRect(x + 24, y + 56, 12, 24);
     }
   } else {
-    ctx.fillRect(x + 2, y + 28, 6, 10);
-    ctx.fillRect(x + 12, y + 28, 6, 10);
+    ctx.fillRect(x + 4, y + 56, 12, 20);
+    ctx.fillRect(x + 24, y + 56, 12, 20);
   }
 }
 
