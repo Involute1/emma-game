@@ -55,7 +55,8 @@ function update() {
     return;
   }
 
-  player = stepPlayerPhysics(player, GRAVITY, PLAYER_GROUND_Y);
+  var gravity = player.velocityY >= 0 ? FALL_GRAVITY : GRAVITY;
+  player = stepPlayerPhysics(player, gravity, PLAYER_GROUND_Y);
 
   obstacles = moveObstacles(obstacles, OBSTACLE_SPEED);
   distanceSinceLastSpawn += OBSTACLE_SPEED;
