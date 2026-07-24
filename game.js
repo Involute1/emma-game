@@ -1,5 +1,8 @@
 var canvas = document.getElementById("game-canvas");
 var ctx = canvas.getContext("2d");
+var birthdayOverlay = document.getElementById("birthday-overlay");
+var birthdayCanvas = document.getElementById("birthday-canvas");
+var birthdayCtx = birthdayCanvas.getContext("2d");
 
 var canvasWidth = 0;
 
@@ -7,6 +10,8 @@ function resizeCanvas() {
   canvasWidth = window.innerWidth;
   canvas.width = canvasWidth;
   canvas.height = CANVAS_HEIGHT;
+  birthdayCanvas.width = window.innerWidth;
+  birthdayCanvas.height = window.innerHeight;
 }
 
 resizeCanvas();
@@ -19,32 +24,11 @@ var distanceSinceLastSpawn = 0;
 var nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP, OBSTACLE_MAX_GAP);
 var confetti = [];
 var gameState = createInitialGameState();
-var audioCtx = null;
+var jumpAudio = new Audio("sounds/jump.wav");
 
 function playJumpSound() {
-  var AudioContextClass = window.AudioContext || window.webkitAudioContext;
-  if (!AudioContextClass) {
-    return;
-  }
-  if (!audioCtx) {
-    audioCtx = new AudioContextClass();
-  }
-  if (audioCtx.state === "suspended") {
-    audioCtx.resume();
-  }
-
-  var now = audioCtx.currentTime;
-  var osc = audioCtx.createOscillator();
-  var gain = audioCtx.createGain();
-  osc.type = "sine";
-  osc.frequency.setValueAtTime(300, now);
-  osc.frequency.exponentialRampToValueAtTime(700, now + 0.08);
-  gain.gain.setValueAtTime(0.2, now);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.start(now);
-  osc.stop(now + 0.15);
+  jumpAudio.currentTime = 0;
+  jumpAudio.play().catch(function () {});
 }
 
 function resetGame() {
@@ -71,10 +55,10 @@ function handleInput() {
 function update() {
   if (gameState.status === GAME_STATUS.WON) {
     confetti = confetti.map(updateConfettiParticle).filter(function (p) {
-      return p.y < CANVAS_HEIGHT + 20;
+      return p.y < birthdayCanvas.height + 20;
     });
     if (confetti.length === 0) {
-      confetti = createConfettiBurst(CONFETTI_COUNT, canvasWidth, Math.random);
+      confetti = createConfettiBurst(CONFETTI_COUNT, birthdayCanvas.width, Math.random);
     }
     return;
   }
@@ -145,28 +129,17 @@ function drawGameOverOverlay() {
   ctx.textAlign = "left";
 }
 
-function drawBirthdayOverlay() {
-  ctx.fillStyle = "#fff8e7";
-  ctx.fillRect(0, 0, canvasWidth, CANVAS_HEIGHT);
-
+function drawBirthdayConfetti() {
+  birthdayCtx.clearRect(0, 0, birthdayCanvas.width, birthdayCanvas.height);
   for (var i = 0; i < confetti.length; i++) {
     var p = confetti[i];
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    ctx.rotate((p.rotation * Math.PI) / 180);
-    ctx.fillStyle = p.color;
-    ctx.fillRect(-3, -3, 6, 6);
-    ctx.restore();
+    birthdayCtx.save();
+    birthdayCtx.translate(p.x, p.y);
+    birthdayCtx.rotate((p.rotation * Math.PI) / 180);
+    birthdayCtx.fillStyle = p.color;
+    birthdayCtx.fillRect(-3, -3, 6, 6);
+    birthdayCtx.restore();
   }
-
-  ctx.fillStyle = "#e63946";
-  ctx.font = "bold 22px sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText("Happy Birthday, Emma!", canvasWidth / 2, CANVAS_HEIGHT / 2);
-  ctx.font = "13px sans-serif";
-  ctx.fillStyle = "#333333";
-  ctx.fillText("press space or click to play again", canvasWidth / 2, CANVAS_HEIGHT / 2 + 20);
-  ctx.textAlign = "left";
 }
 
 function render() {
@@ -199,8 +172,6 @@ function render() {
 
   if (gameState.status === GAME_STATUS.GAME_OVER) {
     drawGameOverOverlay();
-  } else if (gameState.status === GAME_STATUS.WON) {
-    drawBirthdayOverlay();
   }
 }
 
@@ -208,6 +179,14 @@ function loop() {
   frameCount++;
   update();
   render();
+
+  if (gameState.status === GAME_STATUS.WON) {
+    birthdayOverlay.classList.add("visible");
+    drawBirthdayConfetti();
+  } else {
+    birthdayOverlay.classList.remove("visible");
+  }
+
   requestAnimationFrame(loop);
 }
 
@@ -218,8 +197,8 @@ window.addEventListener("keydown", function (e) {
   }
 });
 
-canvas.addEventListener("mousedown", handleInput);
-canvas.addEventListener("touchstart", function (e) {
+window.addEventListener("mousedown", handleInput);
+window.addEventListener("touchstart", function (e) {
   e.preventDefault();
   handleInput();
 });
