@@ -6,6 +6,7 @@ var player = { y: PLAYER_GROUND_Y, velocityY: 0, grounded: true };
 var obstacles = [];
 var distanceSinceLastSpawn = 0;
 var nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP, OBSTACLE_MAX_GAP);
+var confetti = [];
 var gameState = createInitialGameState();
 
 function resetGame() {
@@ -13,6 +14,7 @@ function resetGame() {
   obstacles = [];
   distanceSinceLastSpawn = 0;
   nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP, OBSTACLE_MAX_GAP);
+  confetti = [];
   gameState = createInitialGameState();
 }
 
@@ -28,6 +30,16 @@ function handleInput() {
 }
 
 function update() {
+  if (gameState.status === GAME_STATUS.WON) {
+    confetti = confetti.map(updateConfettiParticle).filter(function (p) {
+      return p.y < CANVAS_HEIGHT + 20;
+    });
+    if (confetti.length === 0) {
+      confetti = createConfettiBurst(CONFETTI_COUNT, CANVAS_WIDTH, Math.random);
+    }
+    return;
+  }
+
   if (gameState.status !== GAME_STATUS.PLAYING) {
     return;
   }
@@ -90,6 +102,30 @@ function drawGameOverOverlay() {
   ctx.textAlign = "left";
 }
 
+function drawBirthdayOverlay() {
+  ctx.fillStyle = "#fff8e7";
+  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+  for (var i = 0; i < confetti.length; i++) {
+    var p = confetti[i];
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate((p.rotation * Math.PI) / 180);
+    ctx.fillStyle = p.color;
+    ctx.fillRect(-3, -3, 6, 6);
+    ctx.restore();
+  }
+
+  ctx.fillStyle = "#e63946";
+  ctx.font = "bold 22px sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("Happy Birthday, Emma!", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+  ctx.font = "13px sans-serif";
+  ctx.fillStyle = "#333333";
+  ctx.fillText("press space or click to play again", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 20);
+  ctx.textAlign = "left";
+}
+
 function render() {
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
@@ -112,6 +148,8 @@ function render() {
 
   if (gameState.status === GAME_STATUS.GAME_OVER) {
     drawGameOverOverlay();
+  } else if (gameState.status === GAME_STATUS.WON) {
+    drawBirthdayOverlay();
   }
 }
 
