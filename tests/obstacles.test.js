@@ -13,6 +13,12 @@ test("moveObstacles shifts every obstacle left by speed", () => {
   assert.deepEqual(result, [{ x: 96, y: 100, width: 16, height: 30 }]);
 });
 
+test("moveObstacles preserves an obstacle's color field across a move", () => {
+  const obstacles = [{ x: 100, y: 100, width: 16, height: 30, color: "#e63946" }];
+  const result = moveObstacles(obstacles, 4);
+  assert.deepEqual(result, [{ x: 96, y: 100, width: 16, height: 30, color: "#e63946" }]);
+});
+
 test("moveObstacles drops obstacles that have scrolled fully off-screen", () => {
   const obstacles = [{ x: -16, y: 100, width: 16, height: 30 }];
   const result = moveObstacles(obstacles, 4);

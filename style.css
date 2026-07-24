@@ -9,7 +9,7 @@ html, body {
 
 #game-canvas {
   display: block;
-  background: #ffffff;
+  background: #e6ddf5;
   border-top: 1px solid #535353;
   border-bottom: 1px solid #535353;
   image-rendering: pixelated;

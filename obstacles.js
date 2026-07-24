@@ -10,12 +10,16 @@ function createObstacle(canvasWidth, groundLineY, width, height) {
 function moveObstacles(obstacles, speed) {
   return obstacles
     .map(function (obstacle) {
-      return {
+      var moved = {
         x: obstacle.x - speed,
         y: obstacle.y,
         width: obstacle.width,
         height: obstacle.height,
       };
+      if (obstacle.color !== undefined) {
+        moved.color = obstacle.color;
+      }
+      return moved;
     })
     .filter(function (obstacle) {
       return obstacle.x + obstacle.width > 0;

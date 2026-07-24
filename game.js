@@ -62,7 +62,9 @@ function update() {
   distanceSinceLastSpawn += OBSTACLE_SPEED;
   if (shouldSpawn(distanceSinceLastSpawn, nextSpawnThreshold)) {
     var height = OBSTACLE_MIN_HEIGHT + Math.random() * (OBSTACLE_MAX_HEIGHT - OBSTACLE_MIN_HEIGHT);
-    obstacles.push(createObstacle(canvasWidth, GROUND_LINE_Y, OBSTACLE_WIDTH, height));
+    var obstacle = createObstacle(canvasWidth, GROUND_LINE_Y, OBSTACLE_WIDTH, height);
+    obstacle.color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+    obstacles.push(obstacle);
     distanceSinceLastSpawn = 0;
     nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP, OBSTACLE_MAX_GAP);
   }
@@ -79,10 +81,11 @@ function update() {
 function drawPlayer() {
   var x = PLAYER_X;
   var y = player.y;
-  ctx.fillStyle = "#333333";
+  ctx.fillStyle = PLAYER_BODY_COLOR;
   ctx.fillRect(x + 8, y, 24, 24);
   ctx.fillRect(x + 4, y + 24, 32, 32);
 
+  ctx.fillStyle = PLAYER_LEG_COLOR;
   if (player.grounded) {
     var legFrame = Math.floor(frameCount / 10) % 2;
     if (legFrame === 0) {
@@ -139,9 +142,16 @@ function drawBirthdayOverlay() {
 }
 
 function render() {
-  ctx.clearRect(0, 0, canvasWidth, CANVAS_HEIGHT);
+  var sky = ctx.createLinearGradient(0, 0, 0, GROUND_LINE_Y);
+  sky.addColorStop(0, SKY_COLOR_TOP);
+  sky.addColorStop(1, SKY_COLOR_BOTTOM);
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, canvasWidth, GROUND_LINE_Y);
 
-  ctx.strokeStyle = "#535353";
+  ctx.fillStyle = GROUND_COLOR;
+  ctx.fillRect(0, GROUND_LINE_Y, canvasWidth, CANVAS_HEIGHT - GROUND_LINE_Y);
+
+  ctx.strokeStyle = GROUND_EDGE_COLOR;
   ctx.beginPath();
   ctx.moveTo(0, GROUND_LINE_Y);
   ctx.lineTo(canvasWidth, GROUND_LINE_Y);
@@ -149,12 +159,13 @@ function render() {
 
   drawPlayer();
 
-  ctx.fillStyle = "#535353";
   for (var i = 0; i < obstacles.length; i++) {
     var o = obstacles[i];
+    ctx.fillStyle = o.color;
     ctx.fillRect(o.x, o.y, o.width, o.height);
   }
 
+  ctx.fillStyle = "#333333";
   ctx.font = "14px sans-serif";
   ctx.fillText("Jumps: " + gameState.jumpCount + " / " + TOTAL_JUMPS_TO_WIN, 10, 20);
 

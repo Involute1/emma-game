@@ -15,6 +15,12 @@ var OBSTACLE_MIN_GAP = 260;
 var OBSTACLE_MAX_GAP = 600;
 var TOTAL_JUMPS_TO_WIN = 18;
 var CONFETTI_COUNT = 150;
+var SKY_COLOR_TOP = "#e6ddf5";
+var SKY_COLOR_BOTTOM = "#f7f2ff";
+var GROUND_COLOR = "#e8d9b5";
+var GROUND_EDGE_COLOR = "#c9b385";
+var PLAYER_BODY_COLOR = "#2a9d8f";
+var PLAYER_LEG_COLOR = "#21776b";
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = {
@@ -35,5 +41,11 @@ if (typeof module !== "undefined" && module.exports) {
     OBSTACLE_MAX_GAP: OBSTACLE_MAX_GAP,
     TOTAL_JUMPS_TO_WIN: TOTAL_JUMPS_TO_WIN,
     CONFETTI_COUNT: CONFETTI_COUNT,
+    SKY_COLOR_TOP: SKY_COLOR_TOP,
+    SKY_COLOR_BOTTOM: SKY_COLOR_BOTTOM,
+    GROUND_COLOR: GROUND_COLOR,
+    GROUND_EDGE_COLOR: GROUND_EDGE_COLOR,
+    PLAYER_BODY_COLOR: PLAYER_BODY_COLOR,
+    PLAYER_LEG_COLOR: PLAYER_LEG_COLOR,
   };
 }
