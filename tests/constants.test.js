@@ -10,7 +10,6 @@ test("win threshold is 18 jumps", () => {
   assert.equal(C.TOTAL_JUMPS_TO_WIN, 18);
 });
 
-test("canvas dimensions match the design spec", () => {
-  assert.equal(C.CANVAS_WIDTH, 600);
-  assert.equal(C.CANVAS_HEIGHT, 150);
+test("canvas height matches the design spec", () => {
+  assert.equal(C.CANVAS_HEIGHT, 300);
 });

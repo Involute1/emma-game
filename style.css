@@ -3,13 +3,14 @@ html, body {
   margin: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
   background: #f7f7f7;
   font-family: sans-serif;
 }
 
 #game-canvas {
-  border: 1px solid #535353;
+  display: block;
   background: #ffffff;
+  border-top: 1px solid #535353;
+  border-bottom: 1px solid #535353;
   image-rendering: pixelated;
 }

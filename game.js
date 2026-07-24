@@ -1,6 +1,17 @@
 var canvas = document.getElementById("game-canvas");
 var ctx = canvas.getContext("2d");
 
+var canvasWidth = 0;
+
+function resizeCanvas() {
+  canvasWidth = window.innerWidth;
+  canvas.width = canvasWidth;
+  canvas.height = CANVAS_HEIGHT;
+}
+
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
 var frameCount = 0;
 var player = { y: PLAYER_GROUND_Y, velocityY: 0, grounded: true };
 var obstacles = [];
@@ -35,7 +46,7 @@ function update() {
       return p.y < CANVAS_HEIGHT + 20;
     });
     if (confetti.length === 0) {
-      confetti = createConfettiBurst(CONFETTI_COUNT, CANVAS_WIDTH, Math.random);
+      confetti = createConfettiBurst(CONFETTI_COUNT, canvasWidth, Math.random);
     }
     return;
   }
@@ -50,7 +61,7 @@ function update() {
   distanceSinceLastSpawn += OBSTACLE_SPEED;
   if (shouldSpawn(distanceSinceLastSpawn, nextSpawnThreshold)) {
     var height = OBSTACLE_MIN_HEIGHT + Math.random() * (OBSTACLE_MAX_HEIGHT - OBSTACLE_MIN_HEIGHT);
-    obstacles.push(createObstacle(CANVAS_WIDTH, GROUND_LINE_Y, OBSTACLE_WIDTH, height));
+    obstacles.push(createObstacle(canvasWidth, GROUND_LINE_Y, OBSTACLE_WIDTH, height));
     distanceSinceLastSpawn = 0;
     nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP, OBSTACLE_MAX_GAP);
   }
@@ -88,15 +99,15 @@ function drawPlayer() {
 
 function drawGameOverOverlay() {
   ctx.fillStyle = "rgba(255,255,255,0.85)";
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  ctx.fillRect(0, 0, canvasWidth, CANVAS_HEIGHT);
   ctx.fillStyle = "#333333";
   ctx.font = "bold 20px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("GAME OVER", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 10);
+  ctx.fillText("GAME OVER", canvasWidth / 2, CANVAS_HEIGHT / 2 - 10);
   ctx.font = "14px sans-serif";
   ctx.fillText(
     "Jumps landed: " + gameState.jumpCount + " — press space or click to retry",
-    CANVAS_WIDTH / 2,
+    canvasWidth / 2,
     CANVAS_HEIGHT / 2 + 14
   );
   ctx.textAlign = "left";
@@ -104,7 +115,7 @@ function drawGameOverOverlay() {
 
 function drawBirthdayOverlay() {
   ctx.fillStyle = "#fff8e7";
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  ctx.fillRect(0, 0, canvasWidth, CANVAS_HEIGHT);
 
   for (var i = 0; i < confetti.length; i++) {
     var p = confetti[i];
@@ -119,20 +130,20 @@ function drawBirthdayOverlay() {
   ctx.fillStyle = "#e63946";
   ctx.font = "bold 22px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("Happy Birthday, Emma!", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+  ctx.fillText("Happy Birthday, Emma!", canvasWidth / 2, CANVAS_HEIGHT / 2);
   ctx.font = "13px sans-serif";
   ctx.fillStyle = "#333333";
-  ctx.fillText("press space or click to play again", CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 20);
+  ctx.fillText("press space or click to play again", canvasWidth / 2, CANVAS_HEIGHT / 2 + 20);
   ctx.textAlign = "left";
 }
 
 function render() {
-  ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  ctx.clearRect(0, 0, canvasWidth, CANVAS_HEIGHT);
 
   ctx.strokeStyle = "#535353";
   ctx.beginPath();
   ctx.moveTo(0, GROUND_LINE_Y);
-  ctx.lineTo(CANVAS_WIDTH, GROUND_LINE_Y);
+  ctx.lineTo(canvasWidth, GROUND_LINE_Y);
   ctx.stroke();
 
   drawPlayer();
