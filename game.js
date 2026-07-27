@@ -166,11 +166,11 @@ function drawPlayer() {
   ctx.fillRect(x + 48, y + 12, 10, 3);
 
   // Rider: leg, torso, arm, head with helmet
-  ctx.fillStyle = PLAYER_LEG_COLOR;
+  ctx.fillStyle = RIDER_SUIT_COLOR;
   ctx.fillRect(x + 20, y + 18, 6, 12);
   ctx.fillRect(x + 20, y + 4, 10, 17);
   ctx.fillRect(x + 28, y + 9, 22, 4);
-  ctx.fillStyle = "#e76f51";
+  ctx.fillStyle = HELMET_COLOR;
   ctx.fillRect(x + 21, y - 5, 11, 10);
 
   ctx.restore();

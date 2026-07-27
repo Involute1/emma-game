@@ -6,7 +6,7 @@ var PLAYER_X = 80;
 var PLAYER_GROUND_Y = GROUND_LINE_Y - PLAYER_HEIGHT;
 var GRAVITY = 1.2;
 var FALL_GRAVITY = 0.7;
-var JUMP_VELOCITY = -20;
+var JUMP_VELOCITY = -17;
 var OBSTACLE_WIDTH = 32;
 var OBSTACLE_MIN_HEIGHT = 40;
 var OBSTACLE_MAX_HEIGHT = 80;
@@ -19,8 +19,10 @@ var SKY_COLOR_TOP = "#e6ddf5";
 var SKY_COLOR_BOTTOM = "#f7f2ff";
 var GROUND_COLOR = "#e8d9b5";
 var GROUND_EDGE_COLOR = "#c9b385";
-var PLAYER_BODY_COLOR = "#2a9d8f";
-var PLAYER_LEG_COLOR = "#21776b";
+var PLAYER_BODY_COLOR = "#d62828";
+var PLAYER_LEG_COLOR = "#8f1d1d";
+var RIDER_SUIT_COLOR = "#1d1d1d";
+var HELMET_COLOR = "#d62828";
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = {
@@ -47,5 +49,7 @@ if (typeof module !== "undefined" && module.exports) {
     GROUND_EDGE_COLOR: GROUND_EDGE_COLOR,
     PLAYER_BODY_COLOR: PLAYER_BODY_COLOR,
     PLAYER_LEG_COLOR: PLAYER_LEG_COLOR,
+    RIDER_SUIT_COLOR: RIDER_SUIT_COLOR,
+    HELMET_COLOR: HELMET_COLOR,
   };
 }
