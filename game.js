@@ -172,6 +172,18 @@ function drawPlayer() {
     ctx.translate(-rearAxleX, -axleY);
   }
 
+  // Nitro exhaust flames at the top speed tier
+  var topTier = SPEED_KMH_TIERS[SPEED_KMH_TIERS.length - 1];
+  if (gameState.jumpCount >= topTier.clearedCount) {
+    var flick = (Math.floor(frameCount / 3) % 2) * 5;
+    ctx.fillStyle = "#4361ee";
+    ctx.fillRect(x - 15 - flick, y + 28, 11 + flick, 4);
+    ctx.fillStyle = "#4cc9f0";
+    ctx.fillRect(x - 9, y + 27, 9, 6);
+    ctx.fillStyle = "#e0fbfc";
+    ctx.fillRect(x - 4, y + 28, 4, 4);
+  }
+
   drawWheel(rearAxleX, axleY, wheelRadius, spin);
   drawWheel(frontAxleX, axleY, wheelRadius, spin);
 
