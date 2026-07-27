@@ -109,27 +109,108 @@ function update() {
   }
 }
 
+function drawWheel(cx, cy, radius, spinAngle) {
+  ctx.fillStyle = "#333333";
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#9a9a9a";
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius - 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = "#333333";
+  ctx.beginPath();
+  for (var i = 0; i < 3; i++) {
+    var a = spinAngle + (i * Math.PI) / 3;
+    ctx.moveTo(cx - Math.cos(a) * (radius - 4), cy - Math.sin(a) * (radius - 4));
+    ctx.lineTo(cx + Math.cos(a) * (radius - 4), cy + Math.sin(a) * (radius - 4));
+  }
+  ctx.stroke();
+  ctx.fillStyle = "#333333";
+  ctx.beginPath();
+  ctx.arc(cx, cy, 2, 0, Math.PI * 2);
+  ctx.fill();
+}
+
 function drawPlayer() {
   var x = PLAYER_X;
   var y = player.y;
-  ctx.fillStyle = PLAYER_BODY_COLOR;
-  ctx.fillRect(x + 8, y, 24, 24);
-  ctx.fillRect(x + 4, y + 24, 32, 32);
+  var wheelRadius = 11;
+  var axleY = y + PLAYER_HEIGHT - wheelRadius;
+  var rearAxleX = x + 13;
+  var frontAxleX = x + PLAYER_WIDTH - 13;
+  var spin = player.grounded ? frameCount * 0.3 : 0;
 
-  ctx.fillStyle = PLAYER_LEG_COLOR;
-  if (player.grounded) {
-    var legFrame = Math.floor(frameCount / 10) % 2;
-    if (legFrame === 0) {
-      ctx.fillRect(x + 4, y + 56, 12, 24);
-      ctx.fillRect(x + 24, y + 56, 12, 16);
-    } else {
-      ctx.fillRect(x + 4, y + 56, 12, 16);
-      ctx.fillRect(x + 24, y + 56, 12, 24);
-    }
-  } else {
-    ctx.fillRect(x + 4, y + 56, 12, 20);
-    ctx.fillRect(x + 24, y + 56, 12, 20);
+  ctx.save();
+  if (!player.grounded) {
+    // Wheelie: tilt back around the rear axle so the front wheel lifts.
+    var tilt = player.velocityY < 0 ? -0.45 : -0.25;
+    ctx.translate(rearAxleX, axleY);
+    ctx.rotate(tilt);
+    ctx.translate(-rearAxleX, -axleY);
   }
+
+  drawWheel(rearAxleX, axleY, wheelRadius, spin);
+  drawWheel(frontAxleX, axleY, wheelRadius, spin);
+
+  // Frame, seat and tank
+  ctx.fillStyle = PLAYER_BODY_COLOR;
+  ctx.fillRect(x + 8, y + 26, PLAYER_WIDTH - 16, 8);
+  ctx.fillRect(x + 30, y + 20, 16, 6);
+  ctx.fillStyle = PLAYER_LEG_COLOR;
+  ctx.fillRect(x + 12, y + 21, 14, 5);
+
+  // Handlebar
+  ctx.fillStyle = "#333333";
+  ctx.fillRect(x + 52, y + 12, 4, 14);
+  ctx.fillRect(x + 48, y + 12, 10, 3);
+
+  // Rider: leg, torso, arm, head with helmet
+  ctx.fillStyle = PLAYER_LEG_COLOR;
+  ctx.fillRect(x + 20, y + 18, 6, 12);
+  ctx.fillRect(x + 20, y + 4, 10, 17);
+  ctx.fillRect(x + 28, y + 9, 22, 4);
+  ctx.fillStyle = "#e76f51";
+  ctx.fillRect(x + 21, y - 5, 11, 10);
+
+  ctx.restore();
+}
+
+function drawCandle(o) {
+  var cx = o.x + o.width / 2;
+  var waxTop = o.y + 18;
+
+  // Wax body in the obstacle's spawn color
+  ctx.fillStyle = o.color;
+  ctx.fillRect(o.x, waxTop, o.width, o.y + o.height - waxTop);
+
+  // Molten cap and drips
+  ctx.fillStyle = "rgba(255,255,255,0.55)";
+  ctx.fillRect(o.x, waxTop, o.width, 4);
+  ctx.fillRect(o.x + 4, waxTop + 4, 5, 7);
+  ctx.fillRect(cx - 2, waxTop + 4, 5, 5);
+  ctx.fillRect(o.x + o.width - 9, waxTop + 4, 5, 9);
+
+  // Stripes
+  ctx.fillStyle = "rgba(255,255,255,0.35)";
+  for (var sy = waxTop + 16; sy < o.y + o.height - 4; sy += 16) {
+    ctx.fillRect(o.x, sy, o.width, 6);
+  }
+
+  // Wick
+  ctx.fillStyle = "#5a4632";
+  ctx.fillRect(cx - 1, o.y + 13, 2, 5);
+
+  // Flickering flame (kept inside the top of the hitbox)
+  var flicker = Math.sin(frameCount * 0.35 + o.x * 0.05);
+  ctx.fillStyle = "#ff9f1c";
+  ctx.beginPath();
+  ctx.ellipse(cx + flicker, o.y + 7, 4.5, 6.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#ffe066";
+  ctx.beginPath();
+  ctx.ellipse(cx + flicker, o.y + 9, 2, 3.5, 0, 0, Math.PI * 2);
+  ctx.fill();
 }
 
 function drawGameOverOverlay() {
@@ -180,9 +261,7 @@ function render() {
   drawPlayer();
 
   for (var i = 0; i < obstacles.length; i++) {
-    var o = obstacles[i];
-    ctx.fillStyle = o.color;
-    ctx.fillRect(o.x, o.y, o.width, o.height);
+    drawCandle(obstacles[i]);
   }
 
   ctx.fillStyle = "#333333";
