@@ -10,6 +10,7 @@ const MIME_TYPES = {
   ".js": "text/javascript",
   ".css": "text/css",
   ".wav": "audio/wav",
+  ".mp3": "audio/mpeg",
 };
 
 http

@@ -40,7 +40,8 @@ var nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP / 2,
 var confetti = [];
 var gameState = createInitialGameState();
 var displayedSpeedKmh = SPEED_KMH_TIERS[0].kmh;
-var jumpAudio = new Audio("sounds/jump.wav");
+var jumpAudio = new Audio("sounds/parkour.mp3");
+var deathAudio = new Audio("sounds/fahhh-sound-effect.mp3");
 
 function displayKmhFor(jumpCount) {
   var kmh = SPEED_KMH_TIERS[0].kmh;
@@ -57,6 +58,11 @@ function playJumpSound() {
   jumpAudio.play().catch(function () {});
 }
 
+function playDeathSound() {
+  deathAudio.currentTime = 0;
+  deathAudio.play().catch(function () {});
+}
+
 function resetGame() {
   player = { y: PLAYER_GROUND_Y, velocityY: 0, grounded: true };
   obstacles = [];
@@ -71,7 +77,6 @@ function handleInput() {
   if (gameState.status === GAME_STATUS.PLAYING) {
     if (player.grounded) {
       player = startJump(player, JUMP_VELOCITY);
-      playJumpSound();
     }
   } else {
     resetGame();
@@ -123,8 +128,12 @@ function update() {
     if (!o.cleared && o.x + o.width < PLAYER_X) {
       o.cleared = true;
       gameState = registerJump(gameState, TOTAL_JUMPS_TO_WIN);
+      playJumpSound();
     }
     if (isColliding(playerRect, o)) {
+      if (gameState.status !== GAME_STATUS.GAME_OVER) {
+        playDeathSound();
+      }
       gameState = registerCollision(gameState);
       break;
     }
