@@ -270,6 +270,13 @@ function render() {
   ctx.font = "14px sans-serif";
   ctx.fillText("Cleared: " + gameState.jumpCount + " / " + TOTAL_JUMPS_TO_WIN, 10, 20);
 
+  var speedKmh =
+    scrollSpeed(gameState.jumpCount, OBSTACLE_SPEED, OBSTACLE_BOOST_SPEED, SPEED_BOOST_THRESHOLD) *
+    SPEED_KMH_FACTOR;
+  ctx.textAlign = "right";
+  ctx.fillText(speedKmh + " km/h", canvasWidth - 10, 20);
+  ctx.textAlign = "left";
+
   if (gameState.status === GAME_STATUS.GAME_OVER) {
     drawGameOverOverlay();
   }
