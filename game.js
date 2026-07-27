@@ -83,8 +83,9 @@ function update() {
   var gravity = player.velocityY >= 0 ? FALL_GRAVITY : GRAVITY;
   player = stepPlayerPhysics(player, gravity, PLAYER_GROUND_Y);
 
-  obstacles = moveObstacles(obstacles, OBSTACLE_SPEED);
-  distanceSinceLastSpawn += OBSTACLE_SPEED;
+  var speed = scrollSpeed(gameState.jumpCount, OBSTACLE_SPEED, OBSTACLE_BOOST_SPEED, SPEED_BOOST_THRESHOLD);
+  obstacles = moveObstacles(obstacles, speed);
+  distanceSinceLastSpawn += speed;
   if (shouldSpawn(distanceSinceLastSpawn, nextSpawnThreshold)) {
     var height = OBSTACLE_MIN_HEIGHT + Math.random() * (OBSTACLE_MAX_HEIGHT - OBSTACLE_MIN_HEIGHT);
     var obstacle = createObstacle(canvasWidth, GROUND_LINE_Y, OBSTACLE_WIDTH, height);

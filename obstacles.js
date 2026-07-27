@@ -29,6 +29,10 @@ function moveObstacles(obstacles, speed) {
     });
 }
 
+function scrollSpeed(jumpCount, baseSpeed, boostSpeed, boostThreshold) {
+  return jumpCount >= boostThreshold ? boostSpeed : baseSpeed;
+}
+
 function shouldSpawn(distanceSinceLastSpawn, nextSpawnThreshold) {
   return distanceSinceLastSpawn >= nextSpawnThreshold;
 }
@@ -43,5 +47,6 @@ if (typeof module !== "undefined" && module.exports) {
     moveObstacles: moveObstacles,
     shouldSpawn: shouldSpawn,
     randomSpawnThreshold: randomSpawnThreshold,
+    scrollSpeed: scrollSpeed,
   };
 }
