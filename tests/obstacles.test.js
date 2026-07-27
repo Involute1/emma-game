@@ -1,6 +1,12 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { createObstacle, moveObstacles, shouldSpawn, randomSpawnThreshold } = require("../obstacles.js");
+const {
+  createObstacle,
+  moveObstacles,
+  shouldSpawn,
+  randomSpawnThreshold,
+  scrollSpeed,
+} = require("../obstacles.js");
 
 test("createObstacle spawns at the right edge, resting on the ground line", () => {
   const obstacle = createObstacle(600, 130, 16, 30);
@@ -40,4 +46,14 @@ test("randomSpawnThreshold maps rng() output into the min/max range", () => {
   assert.equal(randomSpawnThreshold(() => 0, 90, 220), 90);
   assert.equal(randomSpawnThreshold(() => 1, 90, 220), 220);
   assert.equal(randomSpawnThreshold(() => 0.5, 90, 220), 155);
+});
+
+test("scrollSpeed uses the base speed below the boost threshold", () => {
+  assert.equal(scrollSpeed(0, 7, 9, 5), 7);
+  assert.equal(scrollSpeed(4, 7, 9, 5), 7);
+});
+
+test("scrollSpeed switches to the boost speed once the threshold is cleared", () => {
+  assert.equal(scrollSpeed(5, 7, 9, 5), 9);
+  assert.equal(scrollSpeed(12, 7, 9, 5), 9);
 });
