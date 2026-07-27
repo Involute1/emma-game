@@ -39,7 +39,18 @@ var distanceSinceLastSpawn = 0;
 var nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP / 2, OBSTACLE_MAX_GAP / 2);
 var confetti = [];
 var gameState = createInitialGameState();
+var displayedSpeedKmh = SPEED_KMH_TIERS[0].kmh;
 var jumpAudio = new Audio("sounds/jump.wav");
+
+function displayKmhFor(jumpCount) {
+  var kmh = SPEED_KMH_TIERS[0].kmh;
+  for (var i = 0; i < SPEED_KMH_TIERS.length; i++) {
+    if (jumpCount >= SPEED_KMH_TIERS[i].clearedCount) {
+      kmh = SPEED_KMH_TIERS[i].kmh;
+    }
+  }
+  return kmh;
+}
 
 function playJumpSound() {
   jumpAudio.currentTime = 0;
@@ -53,6 +64,7 @@ function resetGame() {
   nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP / 2, OBSTACLE_MAX_GAP / 2);
   confetti = [];
   gameState = createInitialGameState();
+  displayedSpeedKmh = SPEED_KMH_TIERS[0].kmh;
 }
 
 function handleInput() {
@@ -87,6 +99,14 @@ function update() {
   var speed = scrollSpeed(gameState.jumpCount, OBSTACLE_SPEED, OBSTACLE_BOOST_SPEED, SPEED_BOOST_THRESHOLD);
   obstacles = moveObstacles(obstacles, speed);
   distanceSinceLastSpawn += speed;
+
+  // Speedometer dips in the air and climbs back after landing to fake acceleration.
+  var targetKmh = displayKmhFor(gameState.jumpCount) * (player.grounded ? 1 : JUMP_SPEED_DIP);
+  if (displayedSpeedKmh > targetKmh) {
+    displayedSpeedKmh = Math.max(targetKmh, displayedSpeedKmh - SPEED_DROP_STEP_KMH);
+  } else if (displayedSpeedKmh < targetKmh) {
+    displayedSpeedKmh = Math.min(targetKmh, displayedSpeedKmh + SPEED_RECOVER_STEP_KMH);
+  }
   if (shouldSpawn(distanceSinceLastSpawn, nextSpawnThreshold)) {
     var height = OBSTACLE_MIN_HEIGHT + Math.random() * (OBSTACLE_MAX_HEIGHT - OBSTACLE_MIN_HEIGHT);
     var obstacle = createObstacle(canvasWidth, GROUND_LINE_Y, OBSTACLE_WIDTH, height);
@@ -270,11 +290,8 @@ function render() {
   ctx.font = "14px sans-serif";
   ctx.fillText("Cleared: " + gameState.jumpCount + " / " + TOTAL_JUMPS_TO_WIN, 10, 20);
 
-  var speedKmh =
-    scrollSpeed(gameState.jumpCount, OBSTACLE_SPEED, OBSTACLE_BOOST_SPEED, SPEED_BOOST_THRESHOLD) *
-    SPEED_KMH_FACTOR;
   ctx.textAlign = "right";
-  ctx.fillText(speedKmh + " km/h", canvasWidth - 10, 20);
+  ctx.fillText(Math.round(displayedSpeedKmh) + " km/h", canvasWidth - 10, 20);
   ctx.textAlign = "left";
 
   if (gameState.status === GAME_STATUS.GAME_OVER) {
