@@ -35,7 +35,8 @@ var frameCount = 0;
 var player = { y: PLAYER_GROUND_Y, velocityY: 0, grounded: true };
 var obstacles = [];
 var distanceSinceLastSpawn = 0;
-var nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP, OBSTACLE_MAX_GAP);
+// First obstacle arrives at half the usual distance
+var nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP / 2, OBSTACLE_MAX_GAP / 2);
 var confetti = [];
 var gameState = createInitialGameState();
 var jumpAudio = new Audio("sounds/jump.wav");
@@ -49,7 +50,7 @@ function resetGame() {
   player = { y: PLAYER_GROUND_Y, velocityY: 0, grounded: true };
   obstacles = [];
   distanceSinceLastSpawn = 0;
-  nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP, OBSTACLE_MAX_GAP);
+  nextSpawnThreshold = randomSpawnThreshold(Math.random, OBSTACLE_MIN_GAP / 2, OBSTACLE_MAX_GAP / 2);
   confetti = [];
   gameState = createInitialGameState();
 }
