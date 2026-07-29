@@ -216,6 +216,12 @@ function drawPlayer() {
   ctx.fillStyle = HELMET_COLOR;
   ctx.fillRect(x + 21, y - 5, 11, 10);
 
+  // Blonde ponytail trailing back off the helmet
+  var sway = Math.sin(frameCount * 0.2) * 2;
+  ctx.fillStyle = HAIR_COLOR;
+  ctx.fillRect(x + 13, y - 3, 8, 4);
+  ctx.fillRect(x + 8 + sway, y + 1, 7, 4);
+
   ctx.restore();
 }
 

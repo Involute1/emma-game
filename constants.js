@@ -34,6 +34,7 @@ var PLAYER_BODY_COLOR = "#d62828";
 var PLAYER_LEG_COLOR = "#8f1d1d";
 var RIDER_SUIT_COLOR = "#1d1d1d";
 var HELMET_COLOR = "#d62828";
+var HAIR_COLOR = "#f4c542";
 
 if (typeof module !== "undefined" && module.exports) {
   module.exports = {
@@ -68,5 +69,6 @@ if (typeof module !== "undefined" && module.exports) {
     PLAYER_LEG_COLOR: PLAYER_LEG_COLOR,
     RIDER_SUIT_COLOR: RIDER_SUIT_COLOR,
     HELMET_COLOR: HELMET_COLOR,
+    HAIR_COLOR: HAIR_COLOR,
   };
 }
