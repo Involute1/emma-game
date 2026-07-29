@@ -1,0 +1,5 @@
+services:
+  emma-game:
+    build: .
+    ports:
+      - "9080:9080"
