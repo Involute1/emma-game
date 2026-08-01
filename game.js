@@ -3,21 +3,6 @@ var ctx = canvas.getContext("2d");
 var birthdayOverlay = document.getElementById("birthday-overlay");
 var birthdayCanvas = document.getElementById("birthday-canvas");
 var birthdayCtx = birthdayCanvas.getContext("2d");
-var birthdayLinkButton = document.getElementById("birthday-link-button");
-
-birthdayLinkButton.href = BIRTHDAY_LINK_URL;
-birthdayLinkButton.addEventListener("mousedown", function (e) {
-  e.stopPropagation();
-});
-birthdayLinkButton.addEventListener("touchstart", function (e) {
-  e.stopPropagation();
-});
-birthdayLinkButton.addEventListener("keydown", function (e) {
-  if (e.code === "Space") {
-    e.stopPropagation();
-  }
-});
-
 var canvasWidth = 0;
 
 function resizeCanvas() {
